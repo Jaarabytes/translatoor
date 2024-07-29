@@ -3,14 +3,22 @@ import re
 import telebot 
 from deep_translator import GoogleTranslator
 from dotenv import load_dotenv
+import json
+
 
 load_dotenv()
 
-LANGUAGE_CODES=open('languages.json', 'r')
 API_KEY=os.getenv('API_KEY')
 print(f'your api key is {API_KEY}')
 # Assume you've loaded your API key
 bot = telebot.TeleBot(API_KEY, parse_mode=None)
+
+# operating the json file
+with open('languages.json', 'r')as file:
+    language_data = json.load(file)
+
+LANGUAGE_CODES = {lang['name'].lower(): lang['code'] for lang in language_data}
+
 
 @bot.message_handler(func=lambda message: True)
 def translate_message(message):
@@ -27,7 +35,7 @@ def translate_message(message):
     # Find the language code
     target_code = None
     for lang, code in LANGUAGE_CODES.items():
-        if target_language in lang:
+        if target_language in lang.lower():
             target_code = code
             break
 
