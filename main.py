@@ -2,26 +2,15 @@ import os
 import re
 import telebot 
 from deep_translator import GoogleTranslator
-import requests
 from dotenv import load_dotenv
 
 load_dotenv()
 
+LANGUAGE_CODES=open('languages.json', 'r')
 API_KEY=os.getenv('API_KEY')
 print(f'your api key is {API_KEY}')
 # Assume you've loaded your API key
 bot = telebot.TeleBot(API_KEY, parse_mode=None)
-
-# Fetch ISO 639-1 language codes
-def fetch_language_codes():
-    url = "https://gist.githubusercontent.com/piraveen/fafd0d984b2236e809d03a0e306c8a4d/raw/4258894f85de7752b78537a4aa66e027090c27ad/languages.json"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return {lang['name'].lower(): lang['code'] for lang in response.json()}
-    else:
-        return {}
-
-LANGUAGE_CODES = fetch_language_codes()
 
 @bot.message_handler(func=lambda message: True)
 def translate_message(message):
